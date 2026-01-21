@@ -12,7 +12,7 @@ A Claude Code plugin that splits PRDs/requirements into user stories.
 
 ```bash
 # Clone to plugins directory
-git clone https://github.com/ryo-morimoto/user-story-skills ~/.claude/plugins/story-splitter
+git clone https://github.com/ryo-morimoto/user-story-claude-plugin ~/.claude/plugins/story-splitter
 ```
 
 ## Usage

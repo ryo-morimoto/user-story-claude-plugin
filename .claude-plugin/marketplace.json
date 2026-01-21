@@ -1,0 +1,28 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "user-story-claude-plugin",
+  "owner": {
+    "name": "ryo-morimoto"
+  },
+  "metadata": {
+    "description": "Split PRDs and requirements into well-sized user stories",
+    "version": "1.0.0"
+  },
+  "plugins": [
+    {
+      "name": "story-splitter",
+      "source": ".",
+      "description": "Split PRDs/requirements into user stories using Humanizing Work patterns with INVEST validation",
+      "version": "1.0.0",
+      "author": {
+        "name": "ryo-morimoto"
+      },
+      "homepage": "https://github.com/ryo-morimoto/user-story-claude-plugin",
+      "repository": "https://github.com/ryo-morimoto/user-story-claude-plugin",
+      "license": "MIT",
+      "keywords": ["user-story", "prd", "agile", "splitting", "invest", "vertical-slice"],
+      "category": "development",
+      "tags": ["agile", "planning", "requirements", "story-splitting"]
+    }
+  ]
+}
