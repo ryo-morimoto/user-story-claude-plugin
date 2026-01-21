@@ -5,5 +5,12 @@
   "author": {
     "name": "Ryo Morimoto"
   },
-  "keywords": ["user-story", "prd", "agile", "splitting", "invest", "vertical-slice"]
+  "keywords": ["user-story", "prd", "agile", "splitting", "invest", "vertical-slice"],
+  "commands": [
+    {
+      "name": "verify-stories",
+      "description": "Verify user stories with human review to ensure mutual understanding",
+      "path": "${CLAUDE_PLUGIN_ROOT}/commands/verify-stories.md"
+    }
+  ]
 }
