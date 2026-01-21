@@ -17,9 +17,17 @@ Verify each user story with the human reviewer to ensure mutual understanding.
 
 Read the YAML file from `$ARGUMENTS.file_path` and parse all stories.
 
-### Step 2: For Each Story, Verify Understanding
+### Step 2: Sort Stories by Priority
 
-For each story in `stories[]`, use `AskUserQuestion` to confirm:
+Sort stories by priority before review:
+
+1. **high** - Review first (blocking stories, workflow entry points)
+2. **medium** - Review second (standard stories)
+3. **low** - Review last (optimizations, improvements)
+
+### Step 3: For Each Story, Verify Understanding
+
+For each story in priority-sorted order, use `AskUserQuestion` to confirm:
 
 1. **Title & Description Check**
    - Display the story ID, title, and description
@@ -37,14 +45,14 @@ For each story in `stories[]`, use `AskUserQuestion` to confirm:
    - List the estimated files to be changed
    - Ask if these file estimates are reasonable
 
-### Step 3: Track Issues
+### Step 4: Track Issues
 
 If the human identifies a misunderstanding:
 - Record the story ID and the issue
 - Ask for the correction needed
 - Suggest updating the stories file
 
-### Step 4: Summary Report
+### Step 5: Summary Report
 
 After reviewing all stories, provide:
 - Total stories reviewed
@@ -54,7 +62,10 @@ After reviewing all stories, provide:
 ## Verification Flow Per Story
 
 ```
-For story in stories:
+# Sort: high -> medium -> low
+sorted_stories = sort(stories, by: priority, order: [high, medium, low])
+
+For story in sorted_stories:
   1. Show story summary (id, title, description)
   2. AskUserQuestion: "Is this story's purpose correctly understood?"
      Options: "Yes, correct" / "Needs clarification" / "Wrong understanding"
