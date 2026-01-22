@@ -1,44 +1,39 @@
-# story-splitter
+# User Story Claude Plugin
 
-A Claude Code plugin that splits PRDs/requirements into user stories.
-
-## Features
-
-- Apply Humanizing Work's 9 patterns for story splitting
-- Quality validation using INVEST principles
-- Output stories in YAML format
+A Claude Code plugin that splits PRDs/requirements into user stories using Humanizing Work's 9 patterns.
 
 ## Installation
 
 ```bash
-# Clone to plugins directory
 git clone https://github.com/ryo-morimoto/user-story-claude-plugin ~/.claude/plugins/story-splitter
 ```
 
-## Usage
+## Components
 
-### As a Skill
+### Skill: story-splitter
 
-```
-/story-splitter
-```
-
-Or use natural language:
+Triggered by natural language:
 
 - "split stories"
-- "create user stories"
+- "create user stories from PRD"
 - "split into user stories"
 
-### As an Agent
+### Agent: story-splitter-agent
+
+For autonomous story splitting:
 
 ```
 Task: story-splitter-agent
 Prompt: "Split docs/prd/feature.md into user stories"
 ```
 
-## Output
+### Command: /verify-stories
 
-Generates story files at `./docs/stories/{feature-name}.stories.yaml`
+Review generated stories with human verification:
+
+```
+/verify-stories ./docs/stories/feature.stories.yaml
+```
 
 ## Splitting Patterns
 
@@ -51,6 +46,10 @@ Generates story files at `./docs/stories/{feature-name}.stories.yaml`
 7. Defer Performance
 8. Major Effort
 9. Break Out a Spike
+
+## Output
+
+Stories are generated at `./docs/stories/{feature-name}.stories.yaml` with INVEST validation.
 
 ## License
 
