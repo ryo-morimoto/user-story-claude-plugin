@@ -1,9 +1,16 @@
 {
   "name": "story-splitter",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "Split PRD/requirements into well-sized user stories using Humanizing Work patterns with INVEST validation",
   "author": {
     "name": "Ryo Morimoto"
   },
-  "keywords": ["user-story", "prd", "agile", "splitting", "invest", "vertical-slice"]
+  "keywords": [
+    "user-story",
+    "prd",
+    "agile",
+    "splitting",
+    "invest",
+    "vertical-slice"
+  ]
 }
