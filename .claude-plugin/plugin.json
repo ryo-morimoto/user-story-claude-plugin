@@ -1,6 +1,6 @@
 {
   "name": "story-splitter",
-  "version": "1.1.1",
+  "version": "1.2.0",
   "description": "Split PRD/requirements into well-sized user stories using Humanizing Work patterns with INVEST validation",
   "author": {
     "name": "Ryo Morimoto"
