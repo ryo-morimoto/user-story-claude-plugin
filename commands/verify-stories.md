@@ -25,38 +25,52 @@ Sort stories by priority before review:
 2. **medium** - Review second (standard stories)
 3. **low** - Review last (optimizations, improvements)
 
-### Step 3: For Each Story, Verify Understanding
+### Step 3: For Each Story, Verify with Dynamic Questions
 
-For each story in priority-sorted order, use `AskUserQuestion` to confirm:
+For each story in priority-sorted order, use `AskUserQuestion` with dynamically generated questions.
 
-1. **Title & Description Check**
-   - Display the story ID, title, and description
-   - Ask if the understanding is correct
+#### Question Batching Rules
 
-2. **Acceptance Criteria Check**
-   - Display all acceptance criteria (given/when/then)
-   - Ask if these criteria capture the requirements correctly
+- **First call**: Purpose (1 question) + Acceptance criteria 1-3 (up to 3 questions) = max 4 questions
+- **Subsequent calls**: Remaining criteria, 3 questions at a time
 
-3. **Dependencies Check**
-   - Show blocks, blocked_by, and related stories
-   - Ask if the dependency relationships are accurate
+#### Dynamic Question Generation Guidelines
 
-4. **Estimated Files Check**
-   - List the estimated files to be changed
-   - Ask if these file estimates are reasonable
+When generating questions and choices, dig deep to the **Why level**:
+
+**Shallow questions (avoid)**
+- "Can search customers by partial name match" (feature description)
+- "Display 10 results per page" (How)
+
+**Deep questions (aim for)**
+- "High visit frequency means no time for customer selection, so need to identify target customer with minimal input" (Why)
+- "Limit to viewable count per screen so selection completes without scrolling" (Why)
+
+Perspectives for question generation:
+- **Who** is in what situation
+- **What problem** are they facing
+- **What outcome** do they want to achieve
+
+#### Choice Generation
+
+Dynamically generate choices by combining two types:
+
+1. **Interpretation patterns**: Present concrete interpretations of the story's intent
+2. **Evaluation**: "This purpose/criterion is sufficiently clear", etc.
+
+**Note**: Do not include negative choices ("has issues", "incorrect", etc.). If there are problems, the user selects "Other" and provides free-form input.
 
 ### Step 4: Track Issues
 
-If the human identifies a misunderstanding:
+If the user selects "Other" and provides feedback:
 - Record the story ID and the issue
-- Ask for the correction needed
-- Suggest updating the stories file
+- Record the correction needed
 
 ### Step 5: Summary Report
 
 After reviewing all stories, provide:
 - Total stories reviewed
-- Stories with issues identified
+- Stories with issues identified (Other selected)
 - Recommended corrections
 
 ## Verification Flow Per Story
@@ -66,27 +80,29 @@ After reviewing all stories, provide:
 sorted_stories = sort(stories, by: priority, order: [high, medium, low])
 
 For story in sorted_stories:
-  1. Show story summary (id, title, description)
-  2. AskUserQuestion: "Is this story's purpose correctly understood?"
-     Options: "Yes, correct" / "Needs clarification" / "Wrong understanding"
+  criteria_count = len(story.acceptance_criteria)
 
-  3. If not "Yes, correct":
-     - AskUserQuestion: "What needs to be corrected?"
-     - Record the feedback
+  # First call: Purpose + criteria 1-3
+  batch1_criteria = min(3, criteria_count)
 
-  4. Show acceptance criteria
-  5. AskUserQuestion: "Are these acceptance criteria complete and accurate?"
-     Options: "Yes" / "Missing criteria" / "Incorrect criteria"
+  AskUserQuestion with up to 4 questions:
+    Q1: Purpose verification (dynamically generated)
+        - Display: story.id, story.title, story.description
+        - Generate: Why-level interpretation choices
 
-  6. If issues:
-     - AskUserQuestion: "What should be added/changed?"
-     - Record the feedback
+    Q2-Q4: Criteria 1-3 verification (dynamically generated)
+        - Display: given/when/then for each criterion
+        - Generate: Why-level interpretation choices
 
-  7. Show dependencies and estimated files
-  8. AskUserQuestion: "Are dependencies and file estimates accurate?"
-     Options: "Yes" / "Dependencies wrong" / "Files wrong" / "Both wrong"
+  # Subsequent calls: remaining criteria, 3 at a time
+  remaining_criteria = story.acceptance_criteria[3:]
+  for batch in chunks(remaining_criteria, 3):
+    AskUserQuestion with up to 3 questions:
+      Each: Criterion verification (dynamically generated)
+        - Display: given/when/then
+        - Generate: Why-level interpretation choices
 
-  9. Record all feedback for this story
+  # Record any "Other" responses as issues
 ```
 
 ## Output
@@ -102,44 +118,34 @@ After all stories are verified:
 /verify-stories ./docs/stories/auction-receiving.stories.yaml
 ```
 
-## Question Templates
+## Example Question (Purpose)
 
-### Understanding Check
 ```
-Story: {id}
-Title: {title}
-Description:
-{description}
+CUS-001: Search and select customer information
 
-Is this story's purpose and scope correctly understood?
-```
+[Purpose]
+Enable appropriate customer service by referencing past purchase history when a customer visits.
 
-### Acceptance Criteria Check
-```
-Story: {id} - Acceptance Criteria:
-
-{for each ac}
-- Given: {given}
-  When: {when}
-  Then: {then}
-{end for}
-
-Are these acceptance criteria complete and accurate?
+Which interpretation of this purpose is correct?
 ```
 
-### Dependencies & Files Check
+**Dynamically generated choice examples**:
+- "High visit frequency means no time for customer selection, need to identify with minimal input"
+- "For special treatment of repeat customers, need instant history lookup upon visit"
+- "This purpose is sufficiently clear, no additional interpretation needed"
+
+## Example Question (Acceptance Criteria)
+
 ```
-Story: {id}
+CUS-001 Criterion 1:
+Given: Viewing the customer search screen
+When: Enter partial customer name and execute search
+Then: List of matching customers is displayed
 
-Dependencies:
-- Blocks: {blocks}
-- Blocked by: {blocked_by}
-- Related: {related}
-
-Estimated Files:
-{for each file}
-- {file}
-{end for}
-
-Are the dependencies and file estimates accurate?
+What is the intent of this criterion?
 ```
+
+**Dynamically generated choice examples**:
+- "Limit to viewable count per screen so selection completes without scrolling"
+- "Prioritize speed over precision with partial match, narrow down with 2-3 characters"
+- "This criterion has sufficient information for implementation"
