@@ -147,7 +147,42 @@ Verify each story meets the following:
 | **S**mall | Files <= 3, AC <= 5 | **Error**: Must re-split |
 | **T**estable | Can write Given-When-Then | Clarify AC |
 
-### Step 4: Vertical Slice Validation
+### Step 4: UI Behavior Coverage
+
+**Required**: Each story must include UI acceptance criteria for:
+
+| Required State | Description | Example |
+|----------------|-------------|---------|
+| **loading** | Loading state during async operations | "Loading spinner is displayed in the search results area" |
+| **error** | Error state and message display | "Error message is displayed below the input field" |
+| **empty** | Empty/zero state | "Empty message is displayed in the list area" |
+| **keyboard** | Keyboard navigation and shortcuts | "Search executes when Enter key is pressed" |
+
+#### Writing UI Acceptance Criteria
+
+Use **structural descriptions** (where it happens), not visual details (color, size):
+
+```yaml
+# Good: Structural
+- type: "ui"
+  given: "Form has validation error"
+  when: "User views the form"
+  then: "Error message is displayed below the invalid field"
+
+# Bad: Too abstract
+- type: "ui"
+  given: "Form has validation error"
+  when: "User views the form"
+  then: "Error is shown"
+
+# Bad: Too detailed (visual)
+- type: "ui"
+  given: "Form has validation error"
+  when: "User views the form"
+  then: "Red error message with icon is displayed below the field"
+```
+
+### Step 5: Vertical Slice Validation
 
 **Required check**: All stories must be Vertical Slices.
 
@@ -187,7 +222,8 @@ stories:
       Because I need Y.
     priority: "high|medium|low"
     acceptance_criteria:
-      - given: "Precondition"
+      - type: "functional|ui"
+        given: "Precondition"
         when: "Action"
         then: "Expected result"
     dependencies:
@@ -215,65 +251,6 @@ review:
 | Changed files | 3 | Re-split |
 | Acceptance criteria | 5 | Re-split |
 | Dependent stories | 2 | Warning |
-
-## Usage Example
-
-### Input Example
-
-```markdown
-## Auction Receiving Feature
-
-Manage receiving of products arrived from auctions.
-
-### Receiving Flow
-1. Enter receiving number (box number:branch number)
-2. Display product list
-3. Select products and confirm receiving
-```
-
-### Output Example
-
-```yaml
-metadata:
-  source: "Auction Receiving Feature"
-  created_at: "2026-01-22T00:00:00Z"
-  feature_prefix: "AUC"
-  pattern_stats:
-    workflow: 3
-
-stories:
-  - id: "AUC-001"
-    title: "Can search products by receiving number"
-    description: |
-      As a warehouse staff, I want to search products by receiving number.
-      Because I need to identify the products for receiving.
-    priority: "high"
-    acceptance_criteria:
-      - given: "Viewing the receiving screen"
-        when: "Enter receiving number (e.g., 1:1,2,3) and press search button"
-        then: "Matching product list is displayed"
-      - given: "Invalid receiving number entered"
-        when: "Execute search"
-        then: "Error message is displayed"
-    dependencies:
-      blocks: ["AUC-002"]
-      blocked_by: []
-      related: []
-    estimated_files:
-      - "src/app/(authenticated)/auction/page.tsx"
-      - "src/app/(authenticated)/auction/_actions/searchByReceivingNumber.ts"
-      - "src/app/(authenticated)/auction/_components/SearchForm.tsx"
-    pattern_used: "workflow"
-
-  - id: "AUC-002"
-    title: "Can select products from search results"
-    # ... continues
-
-review:
-  passed: true
-  issues: []
-  warnings: []
-```
 
 ## Error Handling
 
@@ -304,7 +281,23 @@ review:
       suggestion: "Consider re-splitting with Workflow pattern"
 ```
 
+### UI State Missing
+
+```yaml
+review:
+  passed: false
+  issues:
+    - story_id: "AUC-001"
+      type: "UI_STATE_MISSING"
+      message: "Required UI states are missing"
+      missing_states:
+        - "loading"
+        - "keyboard"
+      suggestion: "Add acceptance criteria for loading state and keyboard navigation"
+```
+
 ## References
 
+- [Examples (Form, List, etc.)](./examples.md) - Read when you need detailed examples
 - [The Humanizing Work Guide to Splitting User Stories](https://www.humanizingwork.com/the-humanizing-work-guide-to-splitting-user-stories/)
 - [Mountain Goat Software - SPIDR](https://www.mountaingoatsoftware.com/blog/five-simple-but-powerful-ways-to-split-user-stories)
