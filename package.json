@@ -1,0 +1,20 @@
+{
+  "name": "user-story-claude-plugin",
+  "version": "1.1.1",
+  "private": true,
+  "description": "A Claude Code plugin that splits PRDs/requirements into user stories.",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ryo-morimoto/user-story-claude-plugin.git"
+  },
+  "author": "Ryo Morimoto",
+  "license": "MIT",
+  "scripts": {
+    "release": "release-it"
+  },
+  "devDependencies": {
+    "@release-it/bumper": "^7.0.5",
+    "@release-it/conventional-changelog": "^10.0.4",
+    "release-it": "^19.2.4"
+  }
+}
